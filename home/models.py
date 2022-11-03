@@ -51,3 +51,13 @@ class Product(models.Model):
     labels = models.CharField(max_length=100,choices =LABELS )
     def __str__(self):
         return self.name
+
+
+class Reviews(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='media')
+    post = models.CharField(max_length=300)
+    feedback = models.TextField()
+
+    def __str__(self):
+        return self.name
