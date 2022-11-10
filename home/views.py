@@ -33,8 +33,16 @@ class Categories(BaseView):
 
 class SearchView(BaseView):
     def get(self,request):
+        self.context
         query = request.GET.get('query')
         if not query:
             return redirect('/')
         self.context['search_product'] = Product.objects.filter(name__icontains = query)
         return render(request, 'search.html', self.context)
+
+
+class DetailView(BaseView):
+    def get(self,request,slug):
+        self.context
+        self.context['product_details'] = Product.objects.filter(slug = slug)
+        return render(request, 'product-detail.html', self.context)
