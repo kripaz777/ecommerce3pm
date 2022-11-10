@@ -45,4 +45,23 @@ class DetailView(BaseView):
     def get(self,request,slug):
         self.context
         self.context['product_details'] = Product.objects.filter(slug = slug)
+        self.context['product_reviews'] =ProductReview.objects.filter(slug=slug)
         return render(request, 'product-detail.html', self.context)
+
+
+def review(request):
+    if request.method == 'POST':
+        username = request.POST['name']
+        email = request.POST['email']
+        review = request.POST['review']
+        slug = request.POST['slug']
+        star = request.POST['star']
+        data = ProductReview.objects.create(
+            username = username,
+            email = email,
+            star = star,
+            review = review,
+            slug = slug
+        )
+        data.save()
+        return redirect(f'/product-details/{{slug}}')
