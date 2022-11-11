@@ -92,4 +92,4 @@ def signup(request):
             messages.error(request, 'The password does not match')
             return redirect('/signup')
 
-    return render(request,'signup.htm')
+    return render(request,'signup.html')
