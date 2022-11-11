@@ -65,3 +65,31 @@ def review(request):
         )
         data.save()
         return redirect(f'/product-details/{{slug}}')
+
+from django.contrib.auth.models import User
+from django.contrib import messages
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        cpassword = request.POST['cpassword']
+        if password == cpassword:
+            if User.objects.filter(username = username).exists():
+                messages.error(request,'The username is already taken')
+                return redirect('/signup')
+            elif User.objects.filter(email = email).exists():
+                messages.error(request, 'The username is already taken')
+                return redirect('/signup')
+            else:
+                user = User.objects.create_user(
+                    username = username,
+                    email = email,
+                    password = password
+                )
+                user.save()
+        else:
+            messages.error(request, 'The password does not match')
+            return redirect('/signup')
+
+    return render(request,'signup.htm')
