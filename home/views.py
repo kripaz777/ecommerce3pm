@@ -94,11 +94,18 @@ def signup(request):
 
     return render(request,'signup.html')
 
-class Cart(BaseView):
+class CartView(BaseView):
     def get(self,request):
         self.context
         username = request.user.username
         self.context['cart_views'] = Cart.objects.filter(username = username,checkout = False)
+        c = 0
+        total_price = 0
+        for i in Cart.objects.filter(username = username,checkout = False):
+            x = Cart.objects.filter(username = username,checkout = False)[c].total
+            total_price = total_price+x
+            c = c+1
+        self.context['total_price'] = total_price
         return render(request,'cart.html',self.context)
 def add_to_cart(request,slug):
     username = request.user.username
@@ -113,7 +120,7 @@ def add_to_cart(request,slug):
         quantity = quantity+1
         total = original_price*quantity
         Cart.objects.filter(slug = slug,username = username).update(quantity = quantity,total = total)
-        return redirect('/')
+        return redirect('/cart')
     else:
         price = Product.objects.get(slug=slug).price
         discounted_price = Product.objects.get(slug=slug).discounted_price
@@ -127,7 +134,7 @@ def add_to_cart(request,slug):
                             items = Product.objects.filter(slug = slug)[0]
                             )
         data.save()
-        return redirect('/')
+        return redirect('/cart')
 
 def remove_cart(request,slug):
     username = request.user.username
@@ -143,10 +150,10 @@ def remove_cart(request,slug):
             quantity = quantity-1
         total = original_price*quantity
         Cart.objects.filter(slug = slug,username = username).update(quantity = quantity,total = total)
-        return redirect('/')
+        return redirect('/cart')
 
 
 def delete_cart(request,slug):
     username = request.user.username
     Cart.objects.filter(slug=slug, username=username,checkout = False).delete()
-    return redirect('/')
+    return redirect('/cart')
