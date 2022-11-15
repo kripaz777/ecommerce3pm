@@ -157,3 +157,12 @@ def delete_cart(request,slug):
     username = request.user.username
     Cart.objects.filter(slug=slug, username=username,checkout = False).delete()
     return redirect('/cart')
+
+
+
+# -----------------------------------------------------API------------------------------------------------
+from rest_framework import routers, serializers, viewsets
+from .serializers import *
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
