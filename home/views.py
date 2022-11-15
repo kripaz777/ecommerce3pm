@@ -163,6 +163,18 @@ def delete_cart(request,slug):
 # -----------------------------------------------------API------------------------------------------------
 from rest_framework import routers, serializers, viewsets
 from .serializers import *
+from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter,OrderingFilter
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+class ProductFilterViewSet(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+    filterset_fields = ['category','subcategory','brand','stock','labels']
+    search_fields = ['name','description']
+    ordering_fields = ['price','id','discounted_price']
